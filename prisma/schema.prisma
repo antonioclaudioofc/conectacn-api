@@ -1,0 +1,142 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  CLIENT
+  PROFESSIONAL
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         UserRole
+  name         String
+  city         String   @default("Coelho Neto")
+  neighborhood String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  professionalProfile ProfessionalProfile?
+  requestsSent        ServiceRequest[]     @relation("ClientRequests")
+  reviewsWritten      Review[]             @relation("ClientReviews")
+
+  @@map("users")
+}
+
+model ProfessionalProfile {
+  userId       String   @id @map("user_id") @db.Uuid
+  bio          String?
+  photoUrl     String?  @map("photo_url")
+  whatsapp     String?
+  responseRate Float    @default(0) @map("response_rate")
+  avgRating    Float    @default(0) @map("avg_rating")
+  reviewCount  Int      @default(0) @map("review_count")
+  lastActiveAt DateTime @default(now()) @map("last_active_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user             User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categories       ProfessionalCategory[]
+  services         Service[]
+  requestsReceived ServiceRequest[]       @relation("ProfessionalRequests")
+  reviewsReceived  Review[]               @relation("ProfessionalReviews")
+
+  @@index([avgRating])
+  @@index([lastActiveAt])
+  @@map("professional_profiles")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  slug String @unique
+
+  professionals ProfessionalCategory[]
+
+  @@map("categories")
+}
+
+model ProfessionalCategory {
+  professionalId String @map("professional_id") @db.Uuid
+  categoryId     Int    @map("category_id")
+
+  professional ProfessionalProfile @relation(fields: [professionalId], references: [userId], onDelete: Cascade)
+  category     Category            @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([professionalId, categoryId])
+  @@index([categoryId])
+  @@map("professional_categories")
+}
+
+model Service {
+  id             String   @id @default(uuid()) @db.Uuid
+  professionalId String   @map("professional_id") @db.Uuid
+  title          String
+  description    String?
+  priceFrom      Decimal? @map("price_from") @db.Decimal(10, 2)
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  professional ProfessionalProfile @relation(fields: [professionalId], references: [userId], onDelete: Cascade)
+  requests     ServiceRequest[]
+
+  @@index([professionalId])
+  @@map("services")
+}
+
+model ServiceRequest {
+  id             String        @id @default(uuid()) @db.Uuid
+  clientId       String        @map("client_id") @db.Uuid
+  professionalId String        @map("professional_id") @db.Uuid
+  serviceId      String?       @map("service_id") @db.Uuid
+  message        String
+  status         RequestStatus @default(PENDING)
+  respondedAt    DateTime?     @map("responded_at") // quando saiu de PENDING → base do response_rate
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  client       User                @relation("ClientRequests", fields: [clientId], references: [id])
+  professional ProfessionalProfile @relation("ProfessionalRequests", fields: [professionalId], references: [userId])
+  service      Service?            @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  review       Review?
+
+  @@index([professionalId, status])
+  @@index([clientId])
+  @@map("service_requests")
+}
+
+model Review {
+  id             String    @id @default(uuid()) @db.Uuid
+  requestId      String    @unique @map("request_id") @db.Uuid // 1 review por request
+  clientId       String    @map("client_id") @db.Uuid
+  professionalId String    @map("professional_id") @db.Uuid
+  rating         Int // 1..5 (validado na API)
+  comment        String?
+  flagged        Boolean   @default(false)
+  flaggedAt      DateTime? @map("flagged_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  request      ServiceRequest      @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  client       User                @relation("ClientReviews", fields: [clientId], references: [id])
+  professional ProfessionalProfile @relation("ProfessionalReviews", fields: [professionalId], references: [userId])
+
+  @@index([professionalId, createdAt])
+  @@map("reviews")
+}
