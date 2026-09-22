@@ -1,0 +1,48 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+build/
+*.tsbuildinfo
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# Prisma
+prisma/migrations/dev.db
+*.db
+*.db-journal
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel
+.vercel
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Testes / cobertura
+coverage/
+
+# Cache
+.turbo/
+.cache/
+.eslintcache
