@@ -95,6 +95,26 @@ export interface AuthResponse {
   user: User;
 }
 
+// GET /me e PATCH /me
+export interface Me extends User {
+  professionalProfile: {
+    bio: string | null;
+    photoUrl: string | null;
+    whatsapp: string | null;
+    responseRate: number;
+    avgRating: number;
+    reviewCount: number;
+    lastActiveAt: string;
+    categories: Category[];
+  } | null;                 // null para CLIENT
+}
+
+// POST /auth/register
+export interface RegisterResponse {
+  message: string;
+  email: string;
+}
+
 export interface ApiError {
   error: {
     code: string;
@@ -116,14 +136,18 @@ Sempre busque via `GET /categories` (não fixe no front) — ícones podem ser m
 
 Todas as rotas são relativas a `/api/v1`. 🔓 = pública · 🔒 = exige token · 👤 = só cliente · 🛠️ = só profissional.
 
-### Auth e conta
+### Auth e conta ✅ implementado
 
 | Método | Rota | Acesso | Descrição |
 |---|---|---|---|
-| POST | `/auth/register` | 🔓 | Cadastro (retorna token) |
-| POST | `/auth/login` | 🔓 | Login (retorna token) |
-| GET | `/me` | 🔒 | Usuário logado (+ perfil profissional, se for) |
-| PATCH | `/me` | 🔒 | Atualiza `name`, `neighborhood` |
+| POST | `/auth/register` | 🔓 | Cadastro → `201 { message, email }` (sem token; envia código por e-mail) |
+| POST | `/auth/verify-email` | 🔓 | `{ email, code }` → `200 AuthResponse` |
+| POST | `/auth/resend-code` | 🔓 | `{ email }` → `200 { message }` (intervalo mínimo de 60 s) |
+| POST | `/auth/login` | 🔓 | `{ email, password }` → `200 AuthResponse` |
+| GET | `/me` | 🔒 | `Me` — usuário logado (+ perfil profissional, se for) |
+| PATCH | `/me` | 🔒 | `{ name?, neighborhood? }` → `Me`. `neighborhood: null` remove o bairro |
+
+Detalhes do fluxo e dos erros em [Integração → Autenticação](./03-integracao.md#autenticação--implementada).
 
 ### Categorias
 

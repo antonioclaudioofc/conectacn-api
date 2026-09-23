@@ -34,6 +34,9 @@ O projeto usa **TypeScript 7** (compilador nativo), que não expõe a API JavaSc
    |---|---|
    | `DATABASE_URL` | URL **com pooler** do banco |
    | `CORS_ORIGIN` | URL(s) do frontend, separadas por vírgula |
+   | `JWT_SECRET` | Segredo forte, **diferente** do usado em desenvolvimento |
+   | `SMTP_USER` / `SMTP_PASS` | E-mail do Gmail e senha de app (obrigatórios em produção) |
+   | `MAIL_FROM` | Opcional, ex.: `ConectaCN <seu-email@gmail.com>` |
 
    `NODE_ENV=production` é definido pela Vercel automaticamente.
 4. **Deploy** — cada push na `main` gera deploy de produção; outras branches geram *preview*.

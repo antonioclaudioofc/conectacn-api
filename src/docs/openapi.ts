@@ -2,6 +2,8 @@ import { OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
 import { registry } from "./registry";
 
 import "./paths/health";
+import "./paths/auth";
+import "./paths/me";
 
 type OpenApiDocument = ReturnType<OpenApiGeneratorV3["generateDocument"]>;
 

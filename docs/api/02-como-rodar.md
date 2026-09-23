@@ -24,6 +24,40 @@ Copie `.env.example` para `.env` e preencha. **O `.env` nunca é commitado** (es
 | `NODE_ENV` | | `development` | `development`, `test` ou `production` |
 | `PORT` | | `3000` | Porta do servidor local |
 | `CORS_ORIGIN` | | `http://localhost:4200` | Origens liberadas, separadas por vírgula |
+| `JWT_SECRET` | ✅ | — | Mínimo 32 caracteres. Também é a chave do hash dos códigos de verificação |
+| `JWT_EXPIRES_IN` | | `7d` | Validade do token (`7d`, `12h`...) |
+| `SMTP_HOST` | | `smtp.gmail.com` | Servidor SMTP |
+| `SMTP_PORT` | | `465` | Porta SMTP (465 = SSL) |
+| `SMTP_USER` | em produção | — | Seu e-mail do Gmail |
+| `SMTP_PASS` | em produção | — | **Senha de app** do Gmail (não a senha da conta) |
+| `MAIL_FROM` | | `ConectaCN <SMTP_USER>` | Remetente exibido |
+
+Gere o `JWT_SECRET` com:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
+```
+
+> Trocar o `JWT_SECRET` desloga todo mundo e invalida códigos de verificação pendentes.
+
+### E-mail em desenvolvimento
+
+Com `SMTP_USER`/`SMTP_PASS` vazios (e `NODE_ENV` diferente de `production`), nenhum e-mail é enviado: o conteúdo — incluindo o código — aparece no **console do servidor**:
+
+```
+[mail:dev] Para: maria@email.com
+Assunto: 482913 é seu código de verificação do ConectaCN
+```
+
+Em produção, a API não sobe sem SMTP configurado.
+
+### Configurando o Gmail
+
+1. Ative a **verificação em duas etapas** na Conta Google.
+2. Acesse *Conta Google → Segurança → Senhas de app* (ou myaccount.google.com/apppasswords) e crie uma senha para "ConectaCN".
+3. Use o seu e-mail em `SMTP_USER` e a senha de 16 caracteres gerada em `SMTP_PASS`.
+
+Limites: cerca de 500 e-mails/dia em conta pessoal. Os e-mails podem cair no spam — oriente o usuário a conferir a pasta.
 
 As variáveis são validadas na inicialização (`src/config/env.ts`). Se alguma estiver faltando ou inválida, a API não sobe e mostra **apenas o nome** da variável (nunca o valor).
 

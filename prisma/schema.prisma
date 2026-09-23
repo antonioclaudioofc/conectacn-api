@@ -22,21 +22,35 @@ enum RequestStatus {
 }
 
 model User {
-  id           String   @id @default(uuid()) @db.Uuid
-  email        String   @unique
-  passwordHash String   @map("password_hash")
-  role         UserRole
-  name         String
-  city         String   @default("Coelho Neto")
-  neighborhood String?
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id              String    @id @default(uuid()) @db.Uuid
+  email           String    @unique
+  passwordHash    String    @map("password_hash")
+  role            UserRole
+  name            String
+  city            String    @default("Coelho Neto")
+  neighborhood    String?
+  emailVerifiedAt DateTime? @map("email_verified_at") // null = ainda não verificou; login bloqueado
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
-  professionalProfile ProfessionalProfile?
-  requestsSent        ServiceRequest[]     @relation("ClientRequests")
-  reviewsWritten      Review[]             @relation("ClientReviews")
+  professionalProfile   ProfessionalProfile?
+  emailVerificationCode EmailVerificationCode?
+  requestsSent          ServiceRequest[]       @relation("ClientRequests")
+  reviewsWritten        Review[]               @relation("ClientReviews")
 
   @@map("users")
+}
+
+model EmailVerificationCode {
+  userId    String   @id @map("user_id") @db.Uuid
+  codeHash  String   @map("code_hash")
+  expiresAt DateTime @map("expires_at")
+  attempts  Int      @default(0)
+  sentAt    DateTime @default(now()) @map("sent_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verification_codes")
 }
 
 model ProfessionalProfile {

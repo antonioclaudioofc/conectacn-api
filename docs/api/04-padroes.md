@@ -16,6 +16,8 @@ Todos os erros passam por `src/middlewares/error-handler.ts` e saem no mesmo for
 |---|---|---|
 | `throw new AppError(msg, status, code)` | o informado | o informado |
 | `ZodError` (validação) | 400 | `VALIDATION_ERROR` (+ `details` por campo) |
+| Prisma `P2002` (valor único duplicado) | 409 | `CONFLICT` |
+| Prisma `P2025` (registro não encontrado em update/delete) | 404 | `NOT_FOUND` |
 | JSON malformado no corpo | 400 | `INVALID_JSON` |
 | Rota inexistente | 404 | `NOT_FOUND` |
 | Qualquer outro erro | 500 | `INTERNAL_ERROR` (detalhes só no log do servidor) |

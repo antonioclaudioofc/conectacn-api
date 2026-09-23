@@ -11,6 +11,7 @@ PostgreSQL acessado via **Prisma 7**. O schema fica em `prisma/schema.prisma`; a
 ```mermaid
 erDiagram
     User ||--o| ProfessionalProfile : "tem (se PROFESSIONAL)"
+    User ||--o| EmailVerificationCode : "código pendente"
     User ||--o{ ServiceRequest : "envia (cliente)"
     User ||--o{ Review : "escreve (cliente)"
     ProfessionalProfile ||--o{ ProfessionalCategory : atua
@@ -28,7 +29,8 @@ Nos modelos os campos são camelCase; no banco, as tabelas e colunas são snake_
 
 | Modelo | Tabela | Observações |
 |---|---|---|
-| `User` | `users` | `email` único; `role` = `CLIENT` \| `PROFESSIONAL`; `city` padrão "Coelho Neto"; senha só como `password_hash` |
+| `User` | `users` | `email` único; `role` = `CLIENT` \| `PROFESSIONAL`; `city` padrão "Coelho Neto"; senha só como `password_hash`; `email_verified_at` NULL = login bloqueado |
+| `EmailVerificationCode` | `email_verification_codes` | Um código pendente por usuário (PK = `user_id`); `code_hash` (HMAC), `expires_at`, `attempts`, `sent_at`. Apagado após a verificação |
 | `ProfessionalProfile` | `professional_profiles` | Chave primária = `user_id` (1:1 com `User`) → o id do profissional é o id do usuário |
 | `Category` | `categories` | `name` e `slug` únicos; lista fixa via seed |
 | `ProfessionalCategory` | `professional_categories` | N:N profissional ↔ categoria (chave composta) |
@@ -64,6 +66,7 @@ Ficam em `ProfessionalProfile` para a busca não precisar recalcular tudo a cada
 | Migration | Conteúdo |
 |---|---|
 | `20260922190842_init` | Criação de todas as tabelas, enums e índices |
+| `20260923120000_auth_email_verification` | `users.email_verified_at` + tabela `email_verification_codes` |
 
 ## Seed
 

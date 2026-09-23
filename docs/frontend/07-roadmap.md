@@ -9,8 +9,8 @@
 | # | Módulo | Status |
 |---|---|---|
 | 0 | Base: banco, `GET /api/health`, Swagger em `/docs` | ✅ Pronto |
-| 1 | Autenticação (`/auth/*`, `GET/PATCH /me`) | 🔜 Próximo |
-| 2 | Categorias | ⏳ |
+| 1 | Autenticação com verificação de e-mail (`/auth/*`, `GET/PATCH /me`) | ✅ Pronto |
+| 2 | Categorias | 🔜 Próximo |
 | 3 | Perfil do profissional | ⏳ |
 | 4 | Serviços | ⏳ |
 | 5 | Busca e perfil público | ⏳ |
@@ -32,4 +32,4 @@ Coisas a alinhar entre front e back — comente se tiver opinião:
 4. **WhatsApp no perfil público.** Mostrar sempre ou só após o aceite (proposta atual)?
 5. **Conta dupla.** Uma pessoa pode ser cliente e profissional ao mesmo tempo com a mesma conta?
 6. **Prazo da taxa de resposta.** Proposta: responder em até **48 h** conta como "respondida no prazo".
-7. **Recuperação de senha.** Não está no escopo da v1 (exige envio de e-mail). Precisa entrar?
+7. **Recuperação de senha.** Ainda não implementada. Como o envio de e-mail já existe (verificação de cadastro), dá para reaproveitar o mesmo mecanismo de código. Precisa entrar na v1?

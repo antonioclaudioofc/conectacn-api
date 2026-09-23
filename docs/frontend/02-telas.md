@@ -15,6 +15,7 @@ Rotas Angular são sugestões — fique à vontade para ajustar. Os endpoints es
 | Perfil público do profissional | `/profissionais/:id` | `GET /professionals/:id`, `GET /professionals/:id/services`, `GET /professionals/:id/reviews` |
 | Login | `/entrar` | `POST /auth/login` |
 | Cadastro (escolha Cliente/Profissional) | `/cadastro` | `POST /auth/register` |
+| Verificação do e-mail (código de 6 dígitos) | `/verificar-email?email=...` | `POST /auth/verify-email`, `POST /auth/resend-code` |
 
 ## Cliente (logado)
 
