@@ -185,17 +185,45 @@ Filtros de `GET /professionals` (todos opcionais, combináveis):
 
 A ordenação é feita pela API (ver [Regras de negócio](./05-regras-de-negocio.md#ordenação-da-busca)) — o front não precisa ordenar.
 
-### Perfil e serviços do profissional logado 🛠️
+### Perfil do profissional logado 🛠️ ✅ implementado
 
 | Método | Rota | Descrição |
 |---|---|---|
-| PATCH | `/me/professional-profile` | Atualiza `bio`, `photoUrl`, `whatsapp`, `categoryIds: number[]` |
+| PATCH | `/me/professional-profile` | Atualiza `bio`, `photoUrl`, `whatsapp`, `categoryIds` → `Me` |
+
+```json
+{
+  "bio": "Eletricista há 10 anos, atendo residências e comércios.",
+  "photoUrl": "https://exemplo.com/foto.jpg",
+  "whatsapp": "(98) 99999-1234",
+  "categoryIds": [1, 17]
+}
+```
+
+- Envie **só os campos que mudaram**; corpo vazio → `400`.
+- `null` limpa `bio`, `photoUrl` ou `whatsapp`.
+- Resposta: o mesmo `Me` do `GET /me`, já atualizado — dá para atualizar o estado do app direto com ela.
+- Cliente chamando esta rota → `403 FORBIDDEN`.
+
+| Campo | Regra |
+|---|---|
+| `bio` | Até 1000 caracteres. Só espaços vira `null` |
+| `photoUrl` | URL **https**, até 500 caracteres. Por enquanto a API recebe só o link (upload de arquivo virá depois — ver [pendências](./07-roadmap.md#pontos-em-aberto)) |
+| `whatsapp` | DDD + número, com ou sem formatação e com ou sem `+55`: `(98) 99999-1234`, `98999991234`, `+55 98 3333-1234`. É salvo e devolvido **só com dígitos e com 55** (`5598999991234`) — pronto para `https://wa.me/5598999991234` |
+| `categoryIds` | 1 a 5 ids de `GET /categories`, sem repetir. **Substitui a lista inteira** (para adicionar uma, envie as antigas + a nova). Id inexistente → `400 INVALID_CATEGORY` |
+
+Sugestão de tela (`/painel/perfil`): carregar `GET /me` + `GET /categories`, mostrar as categorias como chips selecionáveis (máx. 5) e uma prévia do card público.
+
+### Serviços do profissional logado 🛠️
+
+| Método | Rota | Descrição |
+|---|---|---|
 | GET | `/me/services` | Meus serviços (inclui inativos) |
 | POST | `/me/services` | Cria `{ title, description?, priceFrom? }` |
 | PATCH | `/me/services/:id` | Edita (inclusive `active: false` para pausar) |
 | DELETE | `/me/services/:id` | Remove |
 
-Regras de formulário: `title` 3–80 caracteres; `description` até 1000; `priceFrom` número ≥ 0 (envie como número: `150` ou `150.5`); `whatsapp` só dígitos com DDI+DDD (`5598999999999`); `bio` até 1000.
+Regras de formulário: `title` 3–80 caracteres; `description` até 1000; `priceFrom` número ≥ 0 (envie como número: `150` ou `150.5`).
 
 ### Solicitações
 

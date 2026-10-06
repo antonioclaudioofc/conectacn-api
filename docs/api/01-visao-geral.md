@@ -100,6 +100,7 @@ Cada módulo segue o mesmo padrão (exemplo: auth):
 | POST | `/api/v1/auth/login` | Login |
 | GET | `/api/v1/me` | Usuário logado 🔒 |
 | PATCH | `/api/v1/me` | Atualiza nome/bairro 🔒 |
+| PATCH | `/api/v1/me/professional-profile` | Atualiza bio, foto (URL), WhatsApp e categorias 🔒 (só PROFESSIONAL) |
 | GET | `/api/v1/categories` | Lista as categorias (pública, com cache) |
 
 Detalhes de cada rota (corpo, respostas, erros) no Swagger em `/docs` e em [Frontend → Integração](../frontend/03-integracao.md#autenticação--implementada).

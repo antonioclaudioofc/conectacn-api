@@ -35,11 +35,13 @@ export function toMe(
       avgRating: profile.avgRating,
       reviewCount: profile.reviewCount,
       lastActiveAt: profile.lastActiveAt,
-      categories: profile.categories.map(({ category }) => ({
-        id: category.id,
-        name: category.name,
-        slug: category.slug,
-      })),
+      categories: profile.categories
+        .map(({ category }) => ({
+          id: category.id,
+          name: category.name,
+          slug: category.slug,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name, "pt-BR")),
     },
   };
 }

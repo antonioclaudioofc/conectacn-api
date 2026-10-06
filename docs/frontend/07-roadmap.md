@@ -11,8 +11,8 @@
 | 0 | Base: banco, `GET /api/health`, Swagger em `/docs` | ✅ Pronto |
 | 1 | Autenticação com verificação de e-mail (`/auth/*`, `GET/PATCH /me`) | ✅ Pronto |
 | 2 | Categorias (`GET /categories`) | ✅ Pronto |
-| 3 | Perfil do profissional | 🔜 Próximo |
-| 4 | Serviços | ⏳ |
+| 3 | Perfil do profissional (`PATCH /me/professional-profile`) | ✅ Pronto |
+| 4 | Serviços | 🔜 Próximo |
 | 5 | Busca e perfil público | ⏳ |
 | 6 | Solicitações e máquina de estados | ⏳ |
 | 7 | Avaliações e denúncia | ⏳ |
@@ -26,7 +26,7 @@ Enquanto um módulo não está pronto, dá para avançar com **mocks** baseados 
 
 Coisas a alinhar entre front e back — comente se tiver opinião:
 
-1. **Upload de foto.** A v1 recebe só uma URL (`photoUrl`). Precisamos decidir onde hospedar as imagens (ex.: Vercel Blob, Cloudinary) e se o upload passa pela API ou vai direto do front.
+1. **Upload de foto.** Por enquanto `PATCH /me/professional-profile` recebe só uma URL https (`photoUrl`). O upload de arquivo será um módulo à parte; falta decidir onde hospedar as imagens (ex.: Vercel Blob, Cloudinary) e se o upload passa pela API ou vai direto do front.
 2. **Cancelar enquanto `PENDING`.** Pela regra atual o cliente não pode cancelar uma solicitação que ainda não foi respondida. Faz sentido liberar?
 3. **Quem conclui o serviço.** Proposta atual: cliente **ou** profissional podem marcar como concluído. Alternativa: só o cliente confirma (mais seguro contra avaliações "forçadas").
 4. **WhatsApp no perfil público.** Mostrar sempre ou só após o aceite (proposta atual)?
