@@ -12,8 +12,8 @@
 | 1 | Autenticação com verificação de e-mail (`/auth/*`, `GET/PATCH /me`) | ✅ Pronto |
 | 2 | Categorias (`GET /categories`) | ✅ Pronto |
 | 3 | Perfil do profissional (`PATCH /me/professional-profile`) | ✅ Pronto |
-| 4 | Serviços | 🔜 Próximo |
-| 5 | Busca e perfil público | ⏳ |
+| 4 | Serviços (`/me/services`, `GET /professionals/:id/services`) | ✅ Pronto |
+| 5 | Busca e perfil público | 🔜 Próximo |
 | 6 | Solicitações e máquina de estados | ⏳ |
 | 7 | Avaliações e denúncia | ⏳ |
 | 8 | Acabamento (rate limit, revisões) | ⏳ |

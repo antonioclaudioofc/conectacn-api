@@ -101,6 +101,11 @@ Cada módulo segue o mesmo padrão (exemplo: auth):
 | GET | `/api/v1/me` | Usuário logado 🔒 |
 | PATCH | `/api/v1/me` | Atualiza nome/bairro 🔒 |
 | PATCH | `/api/v1/me/professional-profile` | Atualiza bio, foto (URL), WhatsApp e categorias 🔒 (só PROFESSIONAL) |
+| GET | `/api/v1/me/services` | Meus serviços, inclusive pausados 🔒 (só PROFESSIONAL) |
+| POST | `/api/v1/me/services` | Cria serviço (máx. 20) 🔒 (só PROFESSIONAL) |
+| PATCH | `/api/v1/me/services/:id` | Edita/pausa serviço próprio 🔒 (só PROFESSIONAL) |
+| DELETE | `/api/v1/me/services/:id` | Remove serviço próprio 🔒 (só PROFESSIONAL) |
+| GET | `/api/v1/professionals/:id/services` | Serviços ativos de um profissional verificado (pública) |
 | GET | `/api/v1/categories` | Lista as categorias (pública, com cache) |
 
 Detalhes de cada rota (corpo, respostas, erros) no Swagger em `/docs` e em [Frontend → Integração](../frontend/03-integracao.md#autenticação--implementada).

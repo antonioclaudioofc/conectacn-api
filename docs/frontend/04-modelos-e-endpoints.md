@@ -171,7 +171,7 @@ Detalhes do fluxo e dos erros em [Integração → Autenticação](./03-integrac
 |---|---|---|---|
 | GET | `/professionals` | 🔓 | Busca paginada → `Paginated<ProfessionalSummary>` |
 | GET | `/professionals/:id` | 🔓 | Perfil público → `ProfessionalProfile` |
-| GET | `/professionals/:id/services` | 🔓 | Serviços ativos → `Service[]` |
+| GET | `/professionals/:id/services` | 🔓 | ✅ Serviços ativos, em ordem de criação → `Service[]`. Profissional inexistente ou não verificado → `404` |
 | GET | `/professionals/:id/reviews` | 🔓 | Avaliações, mais recentes primeiro → `Paginated<Review>` |
 
 Filtros de `GET /professionals` (todos opcionais, combináveis):
@@ -214,16 +214,40 @@ A ordenação é feita pela API (ver [Regras de negócio](./05-regras-de-negocio
 
 Sugestão de tela (`/painel/perfil`): carregar `GET /me` + `GET /categories`, mostrar as categorias como chips selecionáveis (máx. 5) e uma prévia do card público.
 
-### Serviços do profissional logado 🛠️
+### Serviços do profissional logado 🛠️ ✅ implementado
 
 | Método | Rota | Descrição |
 |---|---|---|
-| GET | `/me/services` | Meus serviços (inclui inativos) |
-| POST | `/me/services` | Cria `{ title, description?, priceFrom? }` |
-| PATCH | `/me/services/:id` | Edita (inclusive `active: false` para pausar) |
-| DELETE | `/me/services/:id` | Remove |
+| GET | `/me/services` | Meus serviços, **inclusive pausados**, em ordem de criação → `Service[]` |
+| POST | `/me/services` | Cria `{ title, description?, priceFrom? }` → `201 Service` |
+| PATCH | `/me/services/:id` | Edita só os campos enviados (inclusive `active`) → `Service` |
+| DELETE | `/me/services/:id` | Remove → `204` (sem corpo) |
 
-Regras de formulário: `title` 3–80 caracteres; `description` até 1000; `priceFrom` número ≥ 0 (envie como número: `150` ou `150.5`).
+```json
+// POST /me/services
+{ "title": "Instalação de chuveiro", "description": "Com troca de resistência.", "priceFrom": 80 }
+
+// resposta 201
+{
+  "id": "…", "professionalId": "…",
+  "title": "Instalação de chuveiro", "description": "Com troca de resistência.",
+  "priceFrom": "80.00", "active": true,
+  "createdAt": "…", "updatedAt": "…"
+}
+```
+
+| Campo | Regra |
+|---|---|
+| `title` | 3 a 80 caracteres (espaços nas pontas são removidos) |
+| `description` | Até 1000 caracteres. Vazio ou `null` → `null` |
+| `priceFrom` | **Número** em reais, 0 a 999999.99 (`80`, `150.5`). Arredondado para 2 casas. Omitido ou `null` → "sob consulta". Volta como **texto** (`"80.00"`) |
+| `active` | Só no PATCH. `false` pausa: o serviço some do perfil público, mas continua em `GET /me/services` |
+
+- Limite de **20 serviços** por profissional → `409 SERVICE_LIMIT_REACHED`.
+- Serviço de outro profissional ou id inválido → `404 NOT_FOUND`.
+- **Pausar vs. remover:** prefira pausar (`active: false`) para tirar do ar temporariamente. Remover é definitivo; solicitações antigas que citavam o serviço continuam existindo, mas sem o vínculo.
+
+Sugestão de tela (`/painel/servicos`): lista com um toggle "Ativo" por serviço (chama o PATCH com `active`), botão "Novo serviço" abrindo um formulário e confirmação antes de remover.
 
 ### Solicitações
 

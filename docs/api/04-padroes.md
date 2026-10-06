@@ -85,6 +85,8 @@ Componentes já registrados em `src/docs/registry.ts`:
 ## Convenções gerais
 
 - Rotas de negócio sob `/api/v1`.
+- IDs na URL (`/:id`) passam por `parseUuidParam` (`src/lib/params.ts`): id que não é UUID vira `404`, em vez de erro do banco.
+- Recursos de outro usuário respondem `404` (não `403`), para não revelar que existem.
 - JSON em camelCase; banco em snake_case (mapeado pelo Prisma).
 - Enums em MAIÚSCULAS.
 - Mensagens de erro em português (são exibidas ao usuário final).
