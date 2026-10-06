@@ -1,4 +1,5 @@
 import { z } from "../lib/zod";
+import { CategorySchema } from "./category.schemas";
 
 const email = z
   .string()
@@ -102,10 +103,6 @@ export const RegisterResponseSchema = z
     email: z.string(),
   })
   .openapi("RegisterResponse");
-
-const CategorySchema = z
-  .object({ id: z.number().int(), name: z.string(), slug: z.string() })
-  .openapi("Category");
 
 export const MeSchema = UserSchema.extend({
   professionalProfile: z

@@ -10,8 +10,8 @@
 |---|---|---|
 | 0 | Base: banco, `GET /api/health`, Swagger em `/docs` | ✅ Pronto |
 | 1 | Autenticação com verificação de e-mail (`/auth/*`, `GET/PATCH /me`) | ✅ Pronto |
-| 2 | Categorias | 🔜 Próximo |
-| 3 | Perfil do profissional | ⏳ |
+| 2 | Categorias (`GET /categories`) | ✅ Pronto |
+| 3 | Perfil do profissional | 🔜 Próximo |
 | 4 | Serviços | ⏳ |
 | 5 | Busca e perfil público | ⏳ |
 | 6 | Solicitações e máquina de estados | ⏳ |

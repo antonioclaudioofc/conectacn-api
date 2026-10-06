@@ -149,11 +149,21 @@ Todas as rotas são relativas a `/api/v1`. 🔓 = pública · 🔒 = exige token
 
 Detalhes do fluxo e dos erros em [Integração → Autenticação](./03-integracao.md#autenticação--implementada).
 
-### Categorias
+### Categorias ✅ implementado
 
 | Método | Rota | Acesso | Descrição |
 |---|---|---|---|
-| GET | `/categories` | 🔓 | Lista todas (sem paginação) → `Category[]` |
+| GET | `/categories` | 🔓 | Lista todas (sem paginação), em ordem alfabética → `Category[]` |
+
+```json
+[
+  { "id": 10, "name": "Aulas Particulares", "slug": "aulas-particulares" },
+  { "id": 8, "name": "Cabeleireiro", "slug": "cabeleireiro" }
+]
+```
+
+- A resposta vem com cache (`Cache-Control`): o navegador reaproveita por 10 min. Dá para carregar uma vez ao abrir o app e guardar num service.
+- Use o `slug` nos filtros e URLs (`/profissionais?categoria=eletrica`) e o `id` ao salvar as categorias do profissional.
 
 ### Profissionais (busca e perfil público)
 

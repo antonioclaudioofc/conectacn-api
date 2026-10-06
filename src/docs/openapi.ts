@@ -4,6 +4,7 @@ import { registry } from "./registry";
 import "./paths/health";
 import "./paths/auth";
 import "./paths/me";
+import "./paths/categories";
 
 type OpenApiDocument = ReturnType<OpenApiGeneratorV3["generateDocument"]>;
 
